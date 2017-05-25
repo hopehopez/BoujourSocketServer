@@ -6,13 +6,13 @@
 //  Copyright © 2017年 zsq. All rights reserved.
 //
 
-#import "GCDAsyncSocket.h"
 
 #import "BoujourSocketServer.h"
+#import "AsyncSocket.h"
 
-@interface BoujourSocketServer ()<NSNetServiceDelegate, GCDAsyncSocketDelegate>
+@interface BoujourSocketServer () <NSNetServiceDelegate>
 
-@property (nonatomic, strong) GCDAsyncSocket *asyncSocket;
+@property (nonatomic, strong) AsyncSocket *asyncSocket;
 @property (nonatomic, assign) UInt16 port;
 @property (nonatomic, copy) NSString *serverName;
 @property (nonatomic, strong) dispatch_queue_t serverQueue;
@@ -38,7 +38,7 @@
 
 - (void)startWithName:(NSString *)name{
     
-    self.asyncSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:self.serverQueue];
+    self.asyncSocket = [[AsyncSocket alloc] initWithDelegate:self];
    // self.port = [self.asyncSocket localPort];
     self.port = 5566;
     self.serverName = name;
@@ -51,14 +51,14 @@
 }
 
 - (void)stop{
-    for (GCDAsyncSocket *socket in self.clintSockets) {
+    for (AsyncSocket *socket in self.clintSockets) {
         [socket setDelegate:nil];
         [socket disconnect];
     }
     [self.clintSockets removeAllObjects];
     
-    self.asyncSocket.delegate = nil;
     [self.asyncSocket disconnect];
+    self.asyncSocket = nil;
     
     [self.netService stop];
     self.netService = nil;
@@ -67,7 +67,7 @@
 
 - (void)sendMessageToAll:(NSString *)message{
     self.sendDate = [NSDate date];
-    for (GCDAsyncSocket *socket in self.clintSockets) {
+    for (AsyncSocket *socket in self.clintSockets) {
         NSData *data = [message dataUsingEncoding:NSUTF8StringEncoding];
         [socket writeData:data withTimeout:-1 tag:100];
     }
@@ -115,38 +115,35 @@
 
 #pragma mark - GCDAsyncSocket 代理
 
-- (void)socket:(GCDAsyncSocket *)sock didAcceptNewSocket:(GCDAsyncSocket *)newSocket{
-    NSLog(@"发现新的连接%@", newSocket.userData);
+- (void)onSocket:(AsyncSocket *)sock didAcceptNewSocket:(AsyncSocket *)newSocket{
+    NSLog(@"发现新的连接");
     newSocket.delegate = self;
     [newSocket readDataWithTimeout:-1 tag:100];
     [self.clintSockets addObject:newSocket];
     [[NSRunLoop currentRunLoop] run];
 }
-- (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port{
-    NSLog(@"socket连接到host: %@", host);
+
+- (void)onSocket:(AsyncSocket *)sock didConnectToHost:(NSString *)host port:(UInt16)port{
+    NSLog(@"socket连接到host: %@, %d", host, port);
 }
 
-
-- (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag{
+- (void)onSocket:(AsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag{
     NSString *str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     NSLog(@"BonjourSocket收到消息: %@", str);
-    NSDate *receiveDate = [NSDate date];
-    double t = [receiveDate timeIntervalSinceDate:self.sendDate]/2.0 * 1000;
-    NSLog(@"%f", t);
+    if (tag == 500) {
+        NSDate *receiveDate = [NSDate date];
+        double t = [receiveDate timeIntervalSinceDate:self.sendDate]/2.0 * 1000;
+        NSLog(@"%f", t);
+    }
 }
 
-
-- (void)socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(long)tag{
+- (void)onSocket:(AsyncSocket *)sock didWriteDataWithTag:(long)tag{
     [sock readDataWithTimeout:-1 tag:tag];
 }
 
-- (void)socketDidCloseReadStream:(GCDAsyncSocket *)sock{
-    NSLog(@"读字节流关闭");
+- (void)onSocketDidDisconnect:(AsyncSocket *)sock{
+    NSLog(@"socket断开连接: %ld", sock.userData);
 }
 
-- (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(nullable NSError *)err{
-    NSLog(@"socket断开连接: %@", sock.userData);
-    
-}
 
 @end

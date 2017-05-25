@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7C0C1C901ED6845300FBF9C2 /* AsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C0C1C8F1ED6845300FBF9C2 /* AsyncSocket.m */; };
 		7C4369A91ED51B7400F45BEC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C4369A81ED51B7400F45BEC /* main.m */; };
 		7C4369AC1ED51B7400F45BEC /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C4369AB1ED51B7400F45BEC /* AppDelegate.m */; };
 		7C4369AF1ED51B7400F45BEC /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C4369AE1ED51B7400F45BEC /* ViewController.m */; };
@@ -19,6 +20,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7C0C1C8E1ED6845300FBF9C2 /* AsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AsyncSocket.h; sourceTree = "<group>"; };
+		7C0C1C8F1ED6845300FBF9C2 /* AsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AsyncSocket.m; sourceTree = "<group>"; };
 		7C4369A41ED51B7400F45BEC /* BoujourSocketServer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BoujourSocketServer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C4369A81ED51B7400F45BEC /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		7C4369AA1ED51B7400F45BEC /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -67,6 +70,8 @@
 		7C4369A61ED51B7400F45BEC /* BoujourSocketServer */ = {
 			isa = PBXGroup;
 			children = (
+				7C0C1C8E1ED6845300FBF9C2 /* AsyncSocket.h */,
+				7C0C1C8F1ED6845300FBF9C2 /* AsyncSocket.m */,
 				7C4369AA1ED51B7400F45BEC /* AppDelegate.h */,
 				7C4369AB1ED51B7400F45BEC /* AppDelegate.m */,
 				7C4369AD1ED51B7400F45BEC /* ViewController.h */,
@@ -180,6 +185,7 @@
 				7C4369AF1ED51B7400F45BEC /* ViewController.m in Sources */,
 				7C4369AC1ED51B7400F45BEC /* AppDelegate.m in Sources */,
 				7C4369A91ED51B7400F45BEC /* main.m in Sources */,
+				7C0C1C901ED6845300FBF9C2 /* AsyncSocket.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
